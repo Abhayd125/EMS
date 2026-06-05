@@ -12,11 +12,4 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: DATABASE_URL
-        fromDatabase:
-          name: ems-db
-          property: connectionString
-
-databases:
-  - name: ems-db
-    plan: free
-    postgresMajorVersion: 15
+        sync: false
