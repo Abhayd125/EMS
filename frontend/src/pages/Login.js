@@ -46,7 +46,7 @@ const Login = () => {
         }}>
           <ShieldCheck size={48} color="#ef4444" />
           <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Welcome Back</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>i-SOFTZONE Employee Management System</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Ora Employee Management System</p>
         </div>
 
         {/* Success Alert */}

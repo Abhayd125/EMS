@@ -59,7 +59,7 @@ const Signup = () => {
         }}>
           <ShieldCheck size={48} color="#ef4444" />
           <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Create Account</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Join i-SOFTZONE EMS Platform</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Join Ora EMS Platform</p>
         </div>
 
         {/* Success Alert */}

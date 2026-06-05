@@ -61,7 +61,7 @@ const Layout = ({ children }) => {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <ShieldCheck color="#ef4444" size={24} />
-          <span style={{ fontWeight: 800, fontSize: '1.2rem', background: 'linear-gradient(to right, #ef4444, #f43f5e)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>i-EMS</span>
+          <span style={{ fontWeight: 800, fontSize: '1.2rem', background: 'linear-gradient(to right, #ef4444, #f43f5e)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Ora-EMS</span>
         </div>
         <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#fff' }}>
           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
@@ -86,7 +86,7 @@ const Layout = ({ children }) => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingLeft: '0.5rem' }}>
             <ShieldCheck color="#ef4444" size={28} />
             <span style={{ fontWeight: 800, fontSize: '1.4rem', letterSpacing: '-0.02em', background: 'linear-gradient(to right, #ef4444, #f43f5e)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              i-SOFTZONE
+              ORA
             </span>
           </div>
 
