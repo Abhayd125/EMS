@@ -1,0 +1,108 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  HR
+  MANAGER
+  EMPLOYEE
+}
+
+model User {
+  id                 Int       @id @default(autoincrement())
+  email              String    @unique
+  password           String
+  name               String
+  role               Role      @default(EMPLOYEE)
+  isVerified         Boolean   @default(false)
+  verificationToken  String?
+  resetToken         String?
+  resetTokenExpiry   DateTime?
+  refreshToken       String?
+  employee           Employee?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model Employee {
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  phone         String
+  address       String
+  profileImage  String?
+  resume        String?
+  documents     String?        // JSON string of document paths
+  departmentId  Int
+  department    Department     @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  skills        Skill[]        @relation("EmployeeSkills")
+  userId        Int?           @unique
+  user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  managerId     Int?
+  manager       Employee?      @relation("ManagerEmployees", fields: [managerId], references: [id])
+  subordinates  Employee[]     @relation("ManagerEmployees")
+  leaveRequests LeaveRequest[]
+  leaveBalance  LeaveBalance?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Department {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String?
+  employees   Employee[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Skill {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  employees Employee[] @relation("EmployeeSkills")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model LeaveRequest {
+  id             Int        @id @default(autoincrement())
+  employeeId     Int
+  employee       Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType      String     // "SICK", "CASUAL", "PAID"
+  startDate      DateTime
+  endDate        DateTime
+  reason         String
+  status         String     @default("PENDING_MANAGER") // "PENDING_MANAGER", "PENDING_HR", "APPROVED", "REJECTED"
+  managerComment String?
+  hrComment      String?
+  auditLogs      AuditLog[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model LeaveBalance {
+  id         Int      @id @default(autoincrement())
+  employeeId Int      @unique
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  sick       Int      @default(12)
+  casual     Int      @default(15)
+  paid       Int      @default(20)
+  updatedAt  DateTime @updatedAt
+}
+
+model AuditLog {
+  id             Int          @id @default(autoincrement())
+  leaveRequestId Int
+  leaveRequest   LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+  action         String       // "APPLIED", "MANAGER_APPROVED", "HR_APPROVED", "REJECTED"
+  actorId        Int
+  actorName      String
+  comment        String?
+  createdAt      DateTime     @default(now())
+}
