@@ -41,7 +41,7 @@ const signup = async (req, res) => {
 
     // Create user. If it's the very first user, let's make them ADMIN!
     const userCount = await prisma.user.count();
-    const assignedRole = userCount === 0 ? 'ADMIN' : (role || 'USER');
+    const assignedRole = userCount === 0 ? 'ADMIN' : (role === 'USER' || !role ? 'EMPLOYEE' : role);
 
     const user = await prisma.user.create({
       data: {

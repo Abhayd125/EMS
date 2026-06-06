@@ -9,7 +9,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('USER');
+  const [role, setRole] = useState('EMPLOYEE');
   const [validationError, setValidationError] = useState('');
   
   const dispatch = useDispatch();
@@ -166,7 +166,7 @@ const Signup = () => {
                 onChange={(e) => setRole(e.target.value)}
                 style={{ width: '100%', paddingLeft: '2.75rem' }}
               >
-                <option value="USER">User (Read-only Employees, edit profile)</option>
+                <option value="EMPLOYEE">User (Read-only Employees, edit profile)</option>
                 <option value="ADMIN">Admin (Full CRUD on Employees, Departments, Skills)</option>
               </select>
             </div>
