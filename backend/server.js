@@ -16,8 +16,21 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Enable CORS
+const allowedOrigins = ['http://localhost:3000'];
 app.use(cors({
-  origin: 'http://localhost:3000', // React default port
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, postman, or curl)
+    if (!origin) return callback(null, true);
+    
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      origin.endsWith('.vercel.app') || 
+                      /vercel\.app$/.test(origin);
+                      
+    if (!isAllowed) {
+      return callback(new Error('CORS blocked access from this origin.'), false);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
 
