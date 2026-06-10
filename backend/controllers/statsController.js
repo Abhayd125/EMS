@@ -1,10 +1,16 @@
 const prisma = require('../database/db');
 
-const getDashboardStats = async (req, res) => {
+const getDashboardStats = async (req, res, next) => {
   try {
     const totalEmployees = await prisma.employee.count();
     const totalDepartments = await prisma.department.count();
     const totalSkills = await prisma.skill.count();
+    const totalAssets = await prisma.asset.count();
+    const pendingLeaves = await prisma.leaveRequest.count({
+      where: {
+        status: { in: ['PENDING_MANAGER', 'PENDING_HR'] }
+      }
+    });
 
     // Department Headcount breakdown
     const departmentBreakdown = await prisma.department.findMany({
@@ -42,6 +48,8 @@ const getDashboardStats = async (req, res) => {
         totalEmployees,
         totalDepartments,
         totalSkills,
+        totalAssets,
+        pendingLeaves,
         departmentBreakdown: departmentBreakdown.map(d => ({
           id: d.id,
           name: d.name,
@@ -63,8 +71,7 @@ const getDashboardStats = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get stats error:', error);
-    res.status(500).json({ message: 'Failed to retrieve stats' });
+    next(error);
   }
 };
 

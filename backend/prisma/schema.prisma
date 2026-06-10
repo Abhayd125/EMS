@@ -28,29 +28,36 @@ model User {
   employee           Employee?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
+
+  @@index([email])
 }
 
 model Employee {
-  id            Int            @id @default(autoincrement())
-  name          String
-  email         String         @unique
-  phone         String
-  address       String
-  profileImage  String?
-  resume        String?
-  documents     String?        // JSON string of document paths
-  departmentId  Int
-  department    Department     @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  skills        Skill[]        @relation("EmployeeSkills")
-  userId        Int?           @unique
-  user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
-  managerId     Int?
-  manager       Employee?      @relation("ManagerEmployees", fields: [managerId], references: [id])
-  subordinates  Employee[]     @relation("ManagerEmployees")
-  leaveRequests LeaveRequest[]
-  leaveBalance  LeaveBalance?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id               Int               @id @default(autoincrement())
+  name             String
+  email            String            @unique
+  phone            String
+  address          String
+  profileImage     String?
+  resume           String?
+  documents        String?           // JSON string of document paths
+  departmentId     Int
+  department       Department        @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  skills           Skill[]           @relation("EmployeeSkills")
+  userId           Int?              @unique
+  user             User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  managerId        Int?
+  manager          Employee?         @relation("ManagerEmployees", fields: [managerId], references: [id])
+  subordinates     Employee[]        @relation("ManagerEmployees")
+  leaveRequests    LeaveRequest[]
+  leaveBalance     LeaveBalance?
+  assetAssignments AssetAssignment[]
+  notifications    Notification[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([email])
+  @@index([managerId])
 }
 
 model Department {
@@ -84,6 +91,9 @@ model LeaveRequest {
   auditLogs      AuditLog[]
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
 }
 
 model LeaveBalance {
@@ -105,4 +115,62 @@ model AuditLog {
   actorName      String
   comment        String?
   createdAt      DateTime     @default(now())
+}
+
+model Asset {
+  id           Int               @id @default(autoincrement())
+  name         String
+  serialNumber String            @unique
+  type         String            // "LAPTOP", "MONITOR", "ID_CARD", "OTHER"
+  status       String            @default("AVAILABLE") // "AVAILABLE", "ASSIGNED", "UNDER_REPAIR", "RETIRED"
+  assignments  AssetAssignment[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([serialNumber])
+  @@index([status])
+}
+
+model AssetAssignment {
+  id         Int       @id @default(autoincrement())
+  assetId    Int
+  asset      Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  employeeId Int
+  employee   Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  assignedAt DateTime  @default(now())
+  returnedAt DateTime?
+  status     String    @default("ACTIVE") // "ACTIVE", "RETURNED"
+  notes      String?
+
+  @@index([assetId])
+  @@index([employeeId])
+  @@index([status])
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  employeeId Int
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  title      String
+  message    String
+  type       String   // "LEAVE", "ASSET", "SYSTEM"
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([employeeId])
+  @@index([isRead])
+}
+
+model AuditTrail {
+  id        Int      @id @default(autoincrement())
+  tableName String
+  recordId  Int
+  action    String   // "CREATE", "UPDATE", "DELETE"
+  oldValues Json?
+  newValues Json?
+  actorId   Int?
+  actorName String?
+  createdAt DateTime @default(now())
+
+  @@index([tableName, recordId])
 }

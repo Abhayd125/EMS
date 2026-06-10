@@ -4,6 +4,8 @@ import employeeReducer from './slices/employeeSlice';
 import departmentReducer from './slices/departmentSlice';
 import skillReducer from './slices/skillSlice';
 import leaveReducer from './slices/leaveSlice';
+import assetReducer from './slices/assetSlice';
+import notificationReducer from './slices/notificationSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +13,9 @@ export const store = configureStore({
     employees: employeeReducer,
     departments: departmentReducer,
     skills: skillReducer,
-    leaves: leaveReducer
+    leaves: leaveReducer,
+    assets: assetReducer,
+    notifications: notificationReducer
   }
 });
 

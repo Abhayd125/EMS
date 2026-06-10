@@ -4,13 +4,21 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const { swaggerUi, specs } = require('./config/swagger');
+const errorMiddleware = require('./middleware/errorMiddleware');
+const logger = require('./config/logger');
+const { initCronJobs } = require('./jobs/cronJobs');
 
-const authRoutes = require('./routes/auth');
-const employeeRoutes = require('./routes/employee');
-const departmentRoutes = require('./routes/department');
-const skillRoutes = require('./routes/skill');
-const statsRoutes = require('./routes/stats');
-const leaveRoutes = require('./routes/leave');
+// Import V1 routes
+const authRoutes = require('./routes/v1/auth');
+const employeeRoutes = require('./routes/v1/employee');
+const departmentRoutes = require('./routes/v1/department');
+const skillRoutes = require('./routes/v1/skill');
+const statsRoutes = require('./routes/v1/stats');
+const leaveRoutes = require('./routes/v1/leave');
+const assetRoutes = require('./routes/v1/asset');
+const notificationRoutes = require('./routes/v1/notification');
+const reportRoutes = require('./routes/v1/report');
+const healthRoutes = require('./routes/v1/health');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,7 +27,6 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = ['http://localhost:3000'];
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, postman, or curl)
     if (!origin) return callback(null, true);
     
     const isAllowed = allowedOrigins.includes(origin) || 
@@ -45,28 +52,42 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Swagger UI Endpoint
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-// Routes
+// V1 Routes
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/employees', employeeRoutes);
+app.use('/api/v1/departments', departmentRoutes);
+app.use('/api/v1/skills', skillRoutes);
+app.use('/api/v1/stats', statsRoutes);
+app.use('/api/v1/leaves', leaveRoutes);
+app.use('/api/v1/assets', assetRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
+app.use('/api/v1/reports', reportRoutes);
+app.use('/api/v1/health', healthRoutes);
+
+// Fallback Routes (pointing to V1)
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/leaves', leaveRoutes);
+app.use('/api/assets', assetRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/health', healthRoutes);
 
 // Root route
 app.get('/', (req, res) => {
-  res.send('Employee Management System API is running.');
+  res.send('ORA Employee Management System API is running.');
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    message: err.message || 'Internal Server Error'
-  });
-});
+// Centralized error handling middleware
+app.use(errorMiddleware);
+
+// Initialize Cron Jobs
+initCronJobs();
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
+  logger.info(`Server running on http://localhost:${PORT}`);
+  logger.info(`API Documentation available at http://localhost:${PORT}/api-docs`);
 });

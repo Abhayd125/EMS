@@ -10,7 +10,9 @@ import {
   Sparkles,
   Clock,
   TrendingUp,
-  FileCheck
+  FileCheck,
+  Monitor,
+  ClipboardList
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -80,46 +82,79 @@ const Dashboard = () => {
       </div>
 
       {/* Top Statistic Cards */}
-      <div className="grid-3" style={{ marginBottom: '2.5rem' }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '1.5rem',
+        marginBottom: '2.5rem'
+      }}>
         {/* Total Employees */}
-        <div className="glass-panel" style={{ padding: '1.75rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ padding: '1rem', borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(99,102,241,0.05) 100%)', border: '1px solid rgba(99,102,241,0.15)' }}>
-            <Users size={32} color="#6366f1" />
+        <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ padding: '0.85rem', borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(99,102,241,0.05) 100%)', border: '1px solid rgba(99,102,241,0.15)' }}>
+            <Users size={28} color="#6366f1" />
           </div>
           <div>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Employees</span>
-            <h3 style={{ fontSize: '2.2rem', fontWeight: 800, marginTop: '0.2rem' }}>{stats?.totalEmployees || 0}</h3>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Employees</span>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.2rem' }}>{stats?.totalEmployees || 0}</h3>
           </div>
-          <div style={{ position: 'absolute', bottom: '-10px', right: '-10px', opacity: 0.05 }}>
-            <Users size={120} />
+          <div style={{ position: 'absolute', bottom: '-10px', right: '-10px', opacity: 0.03 }}>
+            <Users size={100} />
           </div>
         </div>
 
         {/* Total Departments */}
-        <div className="glass-panel" style={{ padding: '1.75rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ padding: '1rem', borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, rgba(217,70,239,0.2) 0%, rgba(217,70,239,0.05) 100%)', border: '1px solid rgba(217,70,239,0.15)' }}>
-            <FolderTree size={32} color="#d946ef" />
+        <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ padding: '0.85rem', borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, rgba(217,70,239,0.2) 0%, rgba(217,70,239,0.05) 100%)', border: '1px solid rgba(217,70,239,0.15)' }}>
+            <FolderTree size={28} color="#d946ef" />
           </div>
           <div>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Departments</span>
-            <h3 style={{ fontSize: '2.2rem', fontWeight: 800, marginTop: '0.2rem' }}>{stats?.totalDepartments || 0}</h3>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Departments</span>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.2rem' }}>{stats?.totalDepartments || 0}</h3>
           </div>
-          <div style={{ position: 'absolute', bottom: '-10px', right: '-10px', opacity: 0.05 }}>
-            <FolderTree size={120} />
+          <div style={{ position: 'absolute', bottom: '-10px', right: '-10px', opacity: 0.03 }}>
+            <FolderTree size={100} />
           </div>
         </div>
 
         {/* Total Skills */}
-        <div className="glass-panel" style={{ padding: '1.75rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ padding: '1rem', borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(16,185,129,0.05) 100%)', border: '1px solid rgba(16,185,129,0.15)' }}>
-            <Wrench size={32} color="#10b981" />
+        <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ padding: '0.85rem', borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(16,185,129,0.05) 100%)', border: '1px solid rgba(16,185,129,0.15)' }}>
+            <Wrench size={28} color="#10b981" />
           </div>
           <div>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Skills Mastered</span>
-            <h3 style={{ fontSize: '2.2rem', fontWeight: 800, marginTop: '0.2rem' }}>{stats?.totalSkills || 0}</h3>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Skills Mastered</span>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.2rem' }}>{stats?.totalSkills || 0}</h3>
           </div>
-          <div style={{ position: 'absolute', bottom: '-10px', right: '-10px', opacity: 0.05 }}>
-            <Wrench size={120} />
+          <div style={{ position: 'absolute', bottom: '-10px', right: '-10px', opacity: 0.03 }}>
+            <Wrench size={100} />
+          </div>
+        </div>
+
+        {/* Total Assets */}
+        <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ padding: '0.85rem', borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, rgba(239,68,68,0.2) 0%, rgba(239,68,68,0.05) 100%)', border: '1px solid rgba(239,68,68,0.15)' }}>
+            <Monitor size={28} color="#ef4444" />
+          </div>
+          <div>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Corporate Assets</span>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.2rem' }}>{stats?.totalAssets || 0}</h3>
+          </div>
+          <div style={{ position: 'absolute', bottom: '-10px', right: '-10px', opacity: 0.03 }}>
+            <Monitor size={100} />
+          </div>
+        </div>
+
+        {/* Pending Leave Requests */}
+        <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ padding: '0.85rem', borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(245,158,11,0.05) 100%)', border: '1px solid rgba(245,158,11,0.15)' }}>
+            <ClipboardList size={28} color="#f59e0b" />
+          </div>
+          <div>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pending Leaves</span>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.2rem' }}>{stats?.pendingLeaves || 0}</h3>
+          </div>
+          <div style={{ position: 'absolute', bottom: '-10px', right: '-10px', opacity: 0.03 }}>
+            <ClipboardList size={100} />
           </div>
         </div>
       </div>

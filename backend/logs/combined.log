@@ -1,0 +1,25 @@
+{"level":"info","message":"Background cron jobs successfully initialized.","service":"employee-service","timestamp":"2026-06-10 15:22:23"}
+{"level":"info","message":"Server running on http://localhost:5000","service":"employee-service","timestamp":"2026-06-10 15:22:23"}
+{"level":"info","message":"API Documentation available at http://localhost:5000/api-docs","service":"employee-service","timestamp":"2026-06-10 15:22:23"}
+{"level":"warn","message":"Client Error [401]: Invalid refresh token","service":"employee-service","timestamp":"2026-06-10 15:22:54"}
+{"level":"warn","message":"Client Error [401]: Invalid refresh token","service":"employee-service","timestamp":"2026-06-10 15:22:54"}
+{"level":"warn","message":"Client Error [400]: Invalid credentials","service":"employee-service","timestamp":"2026-06-10 15:23:21"}
+{"level":"warn","message":"No SMTP credentials found in env. Creating a test Ethereal mail account...","service":"employee-service","timestamp":"2026-06-10 15:23:55"}
+{"level":"info","message":"Ethereal test mailer account generated. Username: wzt6gzvwgeqkpm2p@ethereal.email","service":"employee-service","timestamp":"2026-06-10 15:23:56"}
+{"level":"info","message":"Email sent successfully. MessageId: <584f5d27-dec2-5f86-cd5d-7dd466331113@ora-ems.com>","service":"employee-service","timestamp":"2026-06-10 15:24:00"}
+{"level":"info","message":"\n=======================================","service":"employee-service","timestamp":"2026-06-10 15:24:00"}
+{"level":"info","message":"VIEW SENT TEST EMAIL IN BROWSER:","service":"employee-service","timestamp":"2026-06-10 15:24:00"}
+{"level":"info","message":"https://ethereal.email/message/aik0NLhlkJAAPdpoaik0OPsdSb1Td.-wAAAAAXPFLzanDBAEk4UkW9jfNY8","service":"employee-service","timestamp":"2026-06-10 15:24:00"}
+{"level":"info","message":"=======================================\n","service":"employee-service","timestamp":"2026-06-10 15:24:00"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:24:38"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:24:38"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:24:38"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:24:38"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:02"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:02"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:02"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:02"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:50"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:50"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:50"}
+{"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:50"}

@@ -22,6 +22,8 @@ import Skills from './pages/Skills';
 import Profile from './pages/Profile';
 import Leaves from './pages/Leaves';
 import LeaveApprovals from './pages/LeaveApprovals';
+import Assets from './pages/Assets';
+import Reports from './pages/Reports';
 
 // App Logic Component
 const AppRoutes = () => {
@@ -113,6 +115,22 @@ const AppRoutes = () => {
         <ProtectedRoute restrictTo={['ADMIN', 'HR', 'MANAGER']}>
           <Layout>
             <LeaveApprovals />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/assets" element={
+        <ProtectedRoute>
+          <Layout>
+            <Assets />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/reports" element={
+        <ProtectedRoute restrictTo={['ADMIN', 'HR']}>
+          <Layout>
+            <Reports />
           </Layout>
         </ProtectedRoute>
       } />

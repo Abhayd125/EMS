@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../redux/slices/authSlice';
+import { fetchNotifications } from '../redux/slices/notificationSlice';
+import NotificationsPanel from './NotificationsPanel';
 import { 
   LayoutDashboard, 
   Users, 
@@ -13,7 +15,10 @@ import {
   X,
   ShieldCheck,
   FileCheck,
-  ClipboardList
+  ClipboardList,
+  Monitor,
+  BarChart3,
+  Bell
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
@@ -21,8 +26,18 @@ const Layout = ({ children }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { list: notifications } = useSelector((state) => state.notifications);
   
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchNotifications());
+    }
+  }, [dispatch, user]);
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
@@ -34,8 +49,10 @@ const Layout = ({ children }) => {
     { name: 'Employees', path: '/employees', icon: Users, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Departments', path: '/departments', icon: FolderTree, roles: ['ADMIN', 'HR'] },
     { name: 'Skills Master', path: '/skills', icon: Wrench, roles: ['ADMIN', 'HR'] },
+    { name: 'Assets', path: '/assets', icon: Monitor, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Leaves', path: '/leaves', icon: FileCheck, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Approvals', path: '/leaves/approvals', icon: ClipboardList, roles: ['ADMIN', 'HR', 'MANAGER'] },
+    { name: 'Reports', path: '/reports', icon: BarChart3, roles: ['ADMIN', 'HR'] },
     { name: 'My Profile', path: '/profile', icon: UserCircle, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
   ];
 
@@ -125,35 +142,66 @@ const Layout = ({ children }) => {
         </div>
 
         {/* User Card & Logout */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {user && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              padding: '0.75rem 0.5rem',
-              borderTop: '1px solid var(--border)'
-            }}>
+            <>
+              {/* Notification Trigger */}
+              <button
+                onClick={() => setNotificationsOpen(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  width: '100%',
+                  padding: '0.85rem 1rem',
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  position: 'relative',
+                  transition: 'var(--transition)',
+                  textAlign: 'left'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)'}
+              >
+                <Bell size={20} color="#ef4444" />
+                Notifications
+                {unreadCount > 0 && (
+                  <span className="badge badge-primary" style={{ marginLeft: 'auto', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>{unreadCount}</span>
+                )}
+              </button>
+
               <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #ef4444, #f43f5e)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 700,
-                color: '#fff'
+                gap: '0.75rem',
+                padding: '0.75rem 0.5rem',
+                borderTop: '1px solid var(--border)'
               }}>
-                {user.name.charAt(0).toUpperCase()}
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #ef4444, #f43f5e)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  color: '#fff'
+                }}>
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.name}</span>
+                  <span className="badge badge-primary" style={{ alignSelf: 'flex-start', marginTop: '0.2rem', padding: '0.1rem 0.4rem', fontSize: '0.65rem' }}>
+                    {user.role}
+                  </span>
+                </div>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.name}</span>
-                <span className="badge badge-primary" style={{ alignSelf: 'flex-start', marginTop: '0.2rem', padding: '0.1rem 0.4rem', fontSize: '0.65rem' }}>
-                  {user.role}
-                </span>
-              </div>
-            </div>
+            </>
           )}
 
           <button
@@ -180,6 +228,8 @@ const Layout = ({ children }) => {
           </button>
         </div>
       </aside>
+
+      <NotificationsPanel isOpen={notificationsOpen} onClose={() => setNotificationsOpen(false)} />
 
       {/* Main Main Content Container */}
       <main className="main-content" style={{ marginTop: sidebarOpen ? '60px' : '0' }}>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { signupUser, clearError, clearSuccessMessage } from '../redux/slices/authSlice';
-import { User, Mail, Lock, ShieldCheck, AlertCircle, Briefcase } from 'lucide-react';
+import { User, Mail, Lock, ShieldCheck, AlertCircle, Briefcase, Eye, EyeOff } from 'lucide-react';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -11,6 +11,8 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('EMPLOYEE');
   const [validationError, setValidationError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -166,8 +168,9 @@ const Signup = () => {
                 onChange={(e) => setRole(e.target.value)}
                 style={{ width: '100%', paddingLeft: '2.75rem' }}
               >
-                <option value="EMPLOYEE">User (Read-only Employees, edit profile)</option>
-                <option value="ADMIN">Admin (Full CRUD on Employees, Departments, Skills)</option>
+                <option value="EMPLOYEE">Employee (General workforce portal)</option>
+                <option value="HR">HR Officer (Manage leaves and operations - Max 1)</option>
+                <option value="ADMIN">System Administrator (Full database CRUD - Max 1)</option>
               </select>
             </div>
           </div>
@@ -178,14 +181,33 @@ const Signup = () => {
             <div style={{ position: 'relative' }}>
               <Lock size={18} color="var(--text-muted)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 className="form-input"
                 placeholder="Min 6 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                style={{ width: '100%', paddingLeft: '2.75rem' }}
+                style={{ width: '100%', paddingLeft: '2.75rem', paddingRight: '2.75rem' }}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '1rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-muted)',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 
@@ -195,14 +217,33 @@ const Signup = () => {
             <div style={{ position: 'relative' }}>
               <Lock size={18} color="var(--text-muted)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
               <input
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 className="form-input"
                 placeholder="Repeat password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                style={{ width: '100%', paddingLeft: '2.75rem' }}
+                style={{ width: '100%', paddingLeft: '2.75rem', paddingRight: '2.75rem' }}
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '1rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-muted)',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 
