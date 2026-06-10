@@ -24,6 +24,8 @@ import Leaves from './pages/Leaves';
 import LeaveApprovals from './pages/LeaveApprovals';
 import Assets from './pages/Assets';
 import Reports from './pages/Reports';
+import Users from './pages/Users';
+import Attendance from './pages/Attendance';
 
 // App Logic Component
 const AppRoutes = () => {
@@ -123,6 +125,22 @@ const AppRoutes = () => {
         <ProtectedRoute>
           <Layout>
             <Assets />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/attendance" element={
+        <ProtectedRoute>
+          <Layout>
+            <Attendance />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/users" element={
+        <ProtectedRoute restrictTo={['ADMIN']}>
+          <Layout>
+            <Users />
           </Layout>
         </ProtectedRoute>
       } />

@@ -23,3 +23,6 @@
 {"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:50"}
 {"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:50"}
 {"level":"warn","message":"Client Error [404]: Employee profile not found","service":"employee-service","timestamp":"2026-06-10 15:25:50"}
+{"level":"info","message":"Background cron jobs successfully initialized.","service":"employee-service","timestamp":"2026-06-10 15:31:18"}
+{"level":"info","message":"Server running on http://localhost:5000","service":"employee-service","timestamp":"2026-06-10 15:31:18"}
+{"level":"info","message":"API Documentation available at http://localhost:5000/api-docs","service":"employee-service","timestamp":"2026-06-10 15:31:18"}

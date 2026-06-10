@@ -6,6 +6,8 @@ import skillReducer from './slices/skillSlice';
 import leaveReducer from './slices/leaveSlice';
 import assetReducer from './slices/assetSlice';
 import notificationReducer from './slices/notificationSlice';
+import userReducer from './slices/userSlice';
+import attendanceReducer from './slices/attendanceSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +17,9 @@ export const store = configureStore({
     skills: skillReducer,
     leaves: leaveReducer,
     assets: assetReducer,
-    notifications: notificationReducer
+    notifications: notificationReducer,
+    users: userReducer,
+    attendance: attendanceReducer
   }
 });
 

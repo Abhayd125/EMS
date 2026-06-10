@@ -53,6 +53,7 @@ model Employee {
   leaveBalance     LeaveBalance?
   assetAssignments AssetAssignment[]
   notifications    Notification[]
+  attendance       Attendance[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
@@ -173,4 +174,21 @@ model AuditTrail {
   createdAt DateTime @default(now())
 
   @@index([tableName, recordId])
+}
+
+model Attendance {
+  id         Int       @id @default(autoincrement())
+  employeeId Int
+  employee   Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date       String    // format "YYYY-MM-DD"
+  checkIn    DateTime  @default(now())
+  checkOut   DateTime?
+  status     String    @default("PRESENT") // "PRESENT", "ABSENT", "LATE"
+  notes      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([employeeId, date])
+  @@index([employeeId])
+  @@index([date])
 }

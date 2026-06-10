@@ -65,31 +65,29 @@ class AuthService {
         }
       });
 
-      // Automatically create corresponding Employee profile for employees/managers/HR
-      if (assignedRole === 'EMPLOYEE' || assignedRole === 'MANAGER' || assignedRole === 'HR') {
-        const defaultDept = await tx.department.findFirst();
-        const deptId = defaultDept ? defaultDept.id : 1;
+      // Automatically create corresponding Employee profile for all registered users
+      const defaultDept = await tx.department.findFirst();
+      const deptId = defaultDept ? defaultDept.id : 1;
 
-        const employee = await tx.employee.create({
-          data: {
-            name,
-            email,
-            phone: '000-000-0000',
-            address: 'Corporate HQ',
-            departmentId: deptId,
-            userId: newUser.id
-          }
-        });
+      const employee = await tx.employee.create({
+        data: {
+          name,
+          email,
+          phone: '000-000-0000',
+          address: 'Corporate HQ',
+          departmentId: deptId,
+          userId: newUser.id
+        }
+      });
 
-        await tx.leaveBalance.create({
-          data: {
-            employeeId: employee.id,
-            sick: 12,
-            casual: 15,
-            paid: 20
-          }
-        });
-      }
+      await tx.leaveBalance.create({
+        data: {
+          employeeId: employee.id,
+          sick: 12,
+          casual: 15,
+          paid: 20
+        }
+      });
 
       return newUser;
     });

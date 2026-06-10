@@ -109,10 +109,21 @@ class LeaveService {
           'LEAVE'
         );
       } catch (err) {
-        // Log notification error but don't fail request
         const logger = require('../config/logger');
         logger.error('Leave notification to manager failed: %s', err.message);
       }
+    }
+
+    // Notify Admins and HRs
+    try {
+      await notificationService.notifyAdminsAndHR(
+        'New Leave Request',
+        `${employee.name} has requested ${days} days of ${leaveType} leave.`,
+        'LEAVE'
+      );
+    } catch (err) {
+      const logger = require('../config/logger');
+      logger.error('Leave notification to Admins and HRs failed: %s', err.message);
     }
 
     await auditTrailService.log(

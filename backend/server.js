@@ -19,6 +19,8 @@ const assetRoutes = require('./routes/v1/asset');
 const notificationRoutes = require('./routes/v1/notification');
 const reportRoutes = require('./routes/v1/report');
 const healthRoutes = require('./routes/v1/health');
+const userRoutes = require('./routes/v1/users');
+const attendanceRoutes = require('./routes/v1/attendance');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -63,6 +65,8 @@ app.use('/api/v1/assets', assetRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/reports', reportRoutes);
 app.use('/api/v1/health', healthRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/attendance', attendanceRoutes);
 
 // Fallback Routes (pointing to V1)
 app.use('/api/auth', authRoutes);
@@ -75,6 +79,8 @@ app.use('/api/assets', assetRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 // Root route
 app.get('/', (req, res) => {

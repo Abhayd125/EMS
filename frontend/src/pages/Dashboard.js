@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { apiRequest } from '../utils/api';
+import { fetchTodayStatus, checkIn, checkOut } from '../redux/slices/attendanceSlice';
 import { 
   Users, 
   FolderTree, 
@@ -9,8 +10,6 @@ import {
   Briefcase, 
   Sparkles,
   Clock,
-  TrendingUp,
-  FileCheck,
   Monitor,
   ClipboardList
 } from 'lucide-react';
@@ -18,10 +17,15 @@ import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const { today, actionLoading } = useSelector((state) => state.attendance);
+  const [notes, setNotes] = useState('');
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -36,7 +40,25 @@ const Dashboard = () => {
     };
 
     fetchStats();
+    dispatch(fetchTodayStatus());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
   }, []);
+
+  const handleCheckIn = () => {
+    dispatch(checkIn(notes)).then(() => {
+      setNotes('');
+    });
+  };
+
+  const handleCheckOut = () => {
+    dispatch(checkOut(notes)).then(() => {
+      setNotes('');
+    });
+  };
 
   if (loading) {
     return (
@@ -79,6 +101,106 @@ const Dashboard = () => {
             <PlusCircle size={18} /> Add Employee
           </Link>
         )}
+      </div>
+
+      {/* Attendance Check-in/out Widget */}
+      <div className="glass-panel" style={{
+        padding: '1.75rem 2rem',
+        marginBottom: '2.5rem',
+        border: '1px solid rgba(239, 68, 68, 0.15)',
+        background: 'linear-gradient(135deg, rgba(13, 13, 16, 0.9) 0%, rgba(239, 68, 68, 0.03) 100%)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '2rem'
+      }}>
+        {/* Clock & Status */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+          <div style={{
+            padding: '1rem',
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.05)',
+            borderRadius: 'var(--radius-md)',
+            textAlign: 'center',
+            minWidth: '160px'
+          }}>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '1px', color: '#fff' }}>
+              {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            </h3>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+              {currentTime.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}
+            </span>
+          </div>
+          <div>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Attendance Status</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+              {!today.checkedIn ? (
+                <span className="badge badge-danger" style={{ fontSize: '0.85rem', padding: '0.35rem 0.85rem' }}>Not Checked In</span>
+              ) : !today.checkedOut ? (
+                <span className="badge badge-success" style={{ fontSize: '0.85rem', padding: '0.35rem 0.85rem' }}>Active Duty (Checked In)</span>
+              ) : (
+                <span className="badge badge-primary" style={{ fontSize: '0.85rem', padding: '0.35rem 0.85rem' }}>Shift Completed (Checked Out)</span>
+              )}
+            </div>
+            {today.checkedIn && today.attendance && (
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                Checked in at: {new Date(today.attendance.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} 
+                {today.attendance.status === 'LATE' && <span style={{ color: '#ef4444', marginLeft: '0.4rem', fontWeight: 600 }}>(LATE ENTRY)</span>}
+              </p>
+            )}
+            {today.checkedOut && today.attendance?.checkOut && (
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                Checked out at: {new Date(today.attendance.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Notes & Actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 350px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          {!today.checkedOut && (
+            <div style={{ flex: '1 1 200px', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Optional daily status note..."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                style={{ height: '42px', fontSize: '0.9rem' }}
+                disabled={actionLoading}
+              />
+            </div>
+          )}
+
+          {!today.checkedIn ? (
+            <button
+              onClick={handleCheckIn}
+              className="btn btn-primary"
+              style={{ height: '42px', minWidth: '140px' }}
+              disabled={actionLoading}
+            >
+              {actionLoading ? 'Working...' : 'Check In'}
+            </button>
+          ) : !today.checkedOut ? (
+            <button
+              onClick={handleCheckOut}
+              className="btn btn-danger"
+              style={{ height: '42px', minWidth: '140px', background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)' }}
+              disabled={actionLoading}
+            >
+              {actionLoading ? 'Working...' : 'Check Out'}
+            </button>
+          ) : (
+            <button
+              className="btn btn-secondary"
+              style={{ height: '42px', minWidth: '140px', cursor: 'not-allowed', opacity: 0.6 }}
+              disabled
+            >
+              Completed
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Top Statistic Cards */}

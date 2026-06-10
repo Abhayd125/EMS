@@ -18,7 +18,9 @@ import {
   ClipboardList,
   Monitor,
   BarChart3,
-  Bell
+  Bell,
+  UserCog,
+  Calendar
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
@@ -47,12 +49,14 @@ const Layout = ({ children }) => {
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Employees', path: '/employees', icon: Users, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
+    { name: 'Attendance', path: '/attendance', icon: Calendar, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Departments', path: '/departments', icon: FolderTree, roles: ['ADMIN', 'HR'] },
     { name: 'Skills Master', path: '/skills', icon: Wrench, roles: ['ADMIN', 'HR'] },
     { name: 'Assets', path: '/assets', icon: Monitor, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Leaves', path: '/leaves', icon: FileCheck, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Approvals', path: '/leaves/approvals', icon: ClipboardList, roles: ['ADMIN', 'HR', 'MANAGER'] },
     { name: 'Reports', path: '/reports', icon: BarChart3, roles: ['ADMIN', 'HR'] },
+    { name: 'User Accounts', path: '/users', icon: UserCog, roles: ['ADMIN'] },
     { name: 'My Profile', path: '/profile', icon: UserCircle, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
   ];
 
