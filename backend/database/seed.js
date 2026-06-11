@@ -24,6 +24,13 @@ const lastNames = [
 ];
 
 async function main() {
+  // Check if database is already populated
+  const userCount = await prisma.user.count();
+  if (userCount > 0 && process.env.FORCE_SEED !== 'true') {
+    console.log('Database already has records. Skipping seeding to prevent overwriting/data loss.');
+    return;
+  }
+
   console.log('Cleaning existing database records...');
   
   // Delete in dependency order

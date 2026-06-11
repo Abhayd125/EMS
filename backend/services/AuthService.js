@@ -280,6 +280,20 @@ class AuthService {
 
     const updatedUser = await userRepository.update(userId, updateData);
 
+    // Keep Employee profile in sync with User profile updates
+    if (updatedUser.employee) {
+      const empUpdate = {};
+      if (name) empUpdate.name = name;
+      if (email) empUpdate.email = email;
+
+      if (Object.keys(empUpdate).length > 0) {
+        await prisma.employee.update({
+          where: { id: updatedUser.employee.id },
+          data: empUpdate
+        });
+      }
+    }
+
     await auditTrailService.log('User', userId, 'UPDATE', oldValues, newValues, actor.id, actor.name);
 
     return updatedUser;
