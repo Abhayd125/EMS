@@ -7,7 +7,6 @@ import {
   Trash2, 
   Edit3, 
   AlertCircle,
-  FileCheck,
   X
 } from 'lucide-react';
 

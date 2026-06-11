@@ -10,8 +10,6 @@ import {
   Edit3, 
   FileText, 
   FolderOpen,
-  Filter,
-  User,
   Phone,
   Mail,
   MapPin

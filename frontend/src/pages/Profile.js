@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile, clearError, clearSuccessMessage } from '../redux/slices/authSlice';
 import { 
-  UserCircle, 
   User, 
   Mail, 
   Lock, 

@@ -2,17 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLeaveBalance, fetchMyLeaves, applyForLeave, resetLeaveStatus } from '../redux/slices/leaveSlice';
 import { 
-  FileCheck, 
   PlusCircle, 
-  Clock, 
-  Calendar, 
   AlertCircle,
-  FileText,
   X,
-  History,
-  CheckCircle2,
-  XCircle,
-  TrendingRight
+  History
 } from 'lucide-react';
 
 const Leaves = () => {
@@ -20,7 +13,6 @@ const Leaves = () => {
   
   // Selectors
   const { balance, history, loading, error, success } = useSelector((state) => state.leaves);
-  const { user } = useSelector((state) => state.auth);
 
   // Modal / Form States
   const [showApplyModal, setShowApplyModal] = useState(false);

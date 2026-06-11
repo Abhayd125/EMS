@@ -7,7 +7,6 @@ import {
   XCircle, 
   AlertCircle,
   Clock,
-  User,
   Calendar,
   Layers,
   X
