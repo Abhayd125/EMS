@@ -12,6 +12,34 @@ const getDashboardStats = async (req, res, next) => {
       }
     });
 
+    // Today's Attendance snapshot for graphs
+    const todayStr = new Date().toISOString().split('T')[0];
+    const presentCount = await prisma.attendance.count({
+      where: { date: todayStr, status: 'PRESENT' }
+    });
+    const lateCount = await prisma.attendance.count({
+      where: { date: todayStr, status: 'LATE' }
+    });
+    
+    // Approved leave count overlapping today
+    const now = new Date();
+    const leaveCount = await prisma.leaveRequest.count({
+      where: {
+        startDate: { lte: now },
+        endDate: { gte: now },
+        status: 'APPROVED'
+      }
+    });
+    const absentCount = Math.max(0, totalEmployees - (presentCount + lateCount + leaveCount));
+
+    // Performance ratings metrics for analytics
+    const avgRatingObj = await prisma.performance.aggregate({
+      _avg: { overallRating: true }
+    });
+    const avgPerformanceRating = avgRatingObj._avg.overallRating 
+      ? parseFloat(avgRatingObj._avg.overallRating.toFixed(2)) 
+      : 0.0;
+
     // Department Headcount breakdown
     const departmentBreakdown = await prisma.department.findMany({
       select: {
@@ -50,6 +78,13 @@ const getDashboardStats = async (req, res, next) => {
         totalSkills,
         totalAssets,
         pendingLeaves,
+        avgPerformanceRating,
+        attendanceToday: {
+          present: presentCount,
+          late: lateCount,
+          onLeave: leaveCount,
+          absent: absentCount
+        },
         departmentBreakdown: departmentBreakdown.map(d => ({
           id: d.id,
           name: d.name,

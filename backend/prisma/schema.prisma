@@ -54,6 +54,8 @@ model Employee {
   assetAssignments AssetAssignment[]
   notifications    Notification[]
   attendance       Attendance[]
+  payroll          Payroll[]
+  performance      Performance[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
@@ -192,3 +194,39 @@ model Attendance {
   @@index([employeeId])
   @@index([date])
 }
+
+model Payroll {
+  id          Int      @id @default(autoincrement())
+  employeeId  Int
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  baseSalary  Float
+  allowance   Float    @default(0)
+  pf          Float    @default(0)
+  tds         Float    @default(0)
+  netSalary   Float
+  payMonth    String   // format "YYYY-MM"
+  status      String   @default("PAID") // "PAID", "PENDING"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([employeeId, payMonth])
+  @@index([employeeId])
+  @@index([payMonth])
+}
+
+model Performance {
+  id              Int      @id @default(autoincrement())
+  employeeId      Int
+  employee        Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  qualityRating   Float
+  productivity    Float
+  communication   Float
+  overallRating   Float
+  comments        String?
+  evaluationDate  DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([employeeId])
+}
+

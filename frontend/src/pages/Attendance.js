@@ -51,6 +51,24 @@ const Attendance = () => {
     }
   };
 
+  const activeLogs = activeTab === 'personal' ? (myLogs?.list || []) : (registry?.list || []);
+
+  const stats = activeLogs.reduce((acc, log) => {
+    if (log.status === 'PRESENT') acc.present += 1;
+    else if (log.status === 'LATE') acc.late += 1;
+    else acc.absent += 1;
+
+    if (log.checkIn && log.checkOut) {
+      const start = new Date(log.checkIn);
+      const end = new Date(log.checkOut);
+      const diffMs = end - start;
+      if (!isNaN(diffMs) && diffMs > 0) {
+        acc.totalHours += diffMs / (1000 * 60 * 60);
+      }
+    }
+    return acc;
+  }, { present: 0, late: 0, absent: 0, totalHours: 0 });
+
   return (
     <div className="animate-fade">
       {/* Page Header */}
@@ -60,6 +78,48 @@ const Attendance = () => {
           Monitor work shift timings, daily logs, punctuality metrics, and employee status.
         </p>
       </div>
+
+      {/* Summary Cards */}
+      {!(user?.role === 'ADMIN' && activeTab === 'personal') && (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '1rem',
+          marginBottom: '2rem'
+        }}>
+          {/* Full Days */}
+          <div className="glass-panel" style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Present Days</span>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--success)' }}>
+              {stats.present} <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-muted)' }}>shifts</span>
+            </h3>
+          </div>
+
+          {/* Late Days */}
+          <div className="glass-panel" style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Late Days</span>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#fbbf24' }}>
+              {stats.late} <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-muted)' }}>times</span>
+            </h3>
+          </div>
+
+          {/* Absent Days */}
+          <div className="glass-panel" style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Absent Days</span>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--error)' }}>
+              {stats.absent} <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-muted)' }}>days</span>
+            </h3>
+          </div>
+
+          {/* Total Hours */}
+          <div className="glass-panel" style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Hours worked</span>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#60a5fa' }}>
+              {stats.totalHours.toFixed(1)} <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-muted)' }}>hrs</span>
+            </h3>
+          </div>
+        </div>
+      )}
 
       {/* Tabs (if Admin/HR) */}
       {isHRorAdmin && (
@@ -238,7 +298,29 @@ const Attendance = () => {
 
       {/* PERSONAL HISTORY TAB */}
       {activeTab === 'personal' && (
-        <>
+        user?.role === 'ADMIN' ? (
+          <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem' }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              background: 'rgba(239, 68, 68, 0.08)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <AlertCircle size={28} color="var(--primary)" />
+            </div>
+            <div style={{ maxWidth: '500px' }}>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.5rem', color: '#fff' }}>Admin Attendance Bypass</h3>
+              <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                As an Administrator, you are exempt from daily check-ins. Your personal check-in/out and daily work hours are not tracked on this platform.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
           {myLogs.loading ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', color: 'var(--text-secondary)' }}>
               <p>Loading your logs...</p>
@@ -306,7 +388,7 @@ const Attendance = () => {
             </div>
           )}
         </>
-      )}
+      ) ) }
     </div>
   );
 };

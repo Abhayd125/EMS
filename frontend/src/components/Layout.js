@@ -20,7 +20,9 @@ import {
   BarChart3,
   Bell,
   UserCog,
-  Calendar
+  Calendar,
+  Banknote,
+  Award
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
@@ -50,6 +52,8 @@ const Layout = ({ children }) => {
     { name: 'Dashboard', path: '/', icon: LayoutDashboard, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Employees', path: '/employees', icon: Users, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Attendance', path: '/attendance', icon: Calendar, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
+    { name: 'Payroll', path: '/payroll', icon: Banknote, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
+    { name: 'Performance', path: '/performance', icon: Award, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },
     { name: 'Departments', path: '/departments', icon: FolderTree, roles: ['ADMIN', 'HR'] },
     { name: 'Skills Master', path: '/skills', icon: Wrench, roles: ['ADMIN', 'HR'] },
     { name: 'Assets', path: '/assets', icon: Monitor, roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] },

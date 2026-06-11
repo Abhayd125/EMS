@@ -8,6 +8,8 @@ import assetReducer from './slices/assetSlice';
 import notificationReducer from './slices/notificationSlice';
 import userReducer from './slices/userSlice';
 import attendanceReducer from './slices/attendanceSlice';
+import payrollReducer from './slices/payrollSlice';
+import performanceReducer from './slices/performanceSlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,7 +21,9 @@ export const store = configureStore({
     assets: assetReducer,
     notifications: notificationReducer,
     users: userReducer,
-    attendance: attendanceReducer
+    attendance: attendanceReducer,
+    payroll: payrollReducer,
+    performance: performanceReducer
   }
 });
 

@@ -13,6 +13,7 @@ const Leaves = () => {
   
   // Selectors
   const { balance, history, loading, error, success } = useSelector((state) => state.leaves);
+  const { user } = useSelector((state) => state.auth);
 
   // Modal / Form States
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -25,10 +26,12 @@ const Leaves = () => {
   const [reason, setReason] = useState('');
 
   useEffect(() => {
-    dispatch(fetchLeaveBalance());
-    dispatch(fetchMyLeaves());
+    if (user && user.role !== 'ADMIN') {
+      dispatch(fetchLeaveBalance());
+      dispatch(fetchMyLeaves());
+    }
     dispatch(resetLeaveStatus());
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (success) {
@@ -38,10 +41,12 @@ const Leaves = () => {
       setReason('');
       setShowApplyModal(false);
       dispatch(resetLeaveStatus());
-      dispatch(fetchLeaveBalance());
-      dispatch(fetchMyLeaves());
+      if (user && user.role !== 'ADMIN') {
+        dispatch(fetchLeaveBalance());
+        dispatch(fetchMyLeaves());
+      }
     }
-  }, [success, dispatch]);
+  }, [success, dispatch, user]);
 
   const handleOpenLogs = (logs) => {
     setSelectedLogs(logs || []);
@@ -93,10 +98,36 @@ const Leaves = () => {
           </p>
         </div>
         
-        <button onClick={() => setShowApplyModal(true)} className="btn btn-primary">
-          <PlusCircle size={18} /> Apply for Leave
-        </button>
+        {user && user.role !== 'ADMIN' && (
+          <button onClick={() => setShowApplyModal(true)} className="btn btn-primary">
+            <PlusCircle size={18} /> Apply for Leave
+          </button>
+        )}
       </div>
+
+      {user && user.role === 'ADMIN' ? (
+        <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem' }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            background: 'rgba(239, 68, 68, 0.08)',
+            border: '1px solid rgba(239, 68, 68, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <AlertCircle size={28} color="var(--primary)" />
+          </div>
+          <div style={{ maxWidth: '500px' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.5rem', color: '#fff' }}>Admin Leave Bypass Active</h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+              As an Administrator, you are exempt from checking-in and checking-out or submitting leave requests. Leave policies and balance accruals do not apply to your account.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <>
 
       {/* Error alert */}
       {error && (
@@ -237,6 +268,8 @@ const Leaves = () => {
           </p>
         )}
       </div>
+    </>
+  )}
 
       {/* Apply Modal */}
       {showApplyModal && (

@@ -26,6 +26,8 @@ import Assets from './pages/Assets';
 import Reports from './pages/Reports';
 import Users from './pages/Users';
 import Attendance from './pages/Attendance';
+import Payroll from './pages/Payroll';
+import Performance from './pages/Performance';
 
 // App Logic Component
 const AppRoutes = () => {
@@ -133,6 +135,22 @@ const AppRoutes = () => {
         <ProtectedRoute>
           <Layout>
             <Attendance />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/payroll" element={
+        <ProtectedRoute>
+          <Layout>
+            <Payroll />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/performance" element={
+        <ProtectedRoute>
+          <Layout>
+            <Performance />
           </Layout>
         </ProtectedRoute>
       } />
