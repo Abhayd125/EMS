@@ -47,7 +47,7 @@ const ForgotPassword = () => {
           <ShieldCheck size={48} color="#ef4444" />
           <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Forgot Password</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', textAlign: 'center' }}>
-            Enter your email and we'll send you a password reset link to the console log.
+            Enter your email and we'll send you a password reset link.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ const ForgotPassword = () => {
             <CheckCircle2 size={20} style={{ flexShrink: 0, marginTop: '0.1rem' }} />
             <div>
               <p style={{ fontWeight: 600, marginBottom: '0.2rem' }}>Reset Link Dispatched!</p>
-              <p style={{ color: '#a7f3d0' }}>The password reset link was printed inside the Node backend console. Check the console and use the link to reset your password.</p>
+              <p style={{ color: '#a7f3d0' }}>A password reset link has been sent to your email address. Please check your inbox (and spam folder) and click the link to reset your password.</p>
             </div>
           </div>
         )}

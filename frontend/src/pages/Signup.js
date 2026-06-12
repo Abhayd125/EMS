@@ -77,7 +77,7 @@ const Signup = () => {
             lineHeight: '1.4'
           }}>
             <p style={{ fontWeight: 600, marginBottom: '0.2rem' }}>Registration Successful!</p>
-            <p style={{ fontSize: '0.8rem', color: '#a7f3d0' }}>We printed your verification link in the node backend console. Copy/paste that link to verify your email.</p>
+            <p style={{ fontSize: '0.8rem', color: '#a7f3d0' }}>A verification link has been sent to your email address. Please check your inbox and verify your email.</p>
             <div style={{ marginTop: '0.75rem', textAlign: 'right' }}>
               <Link to="/login" className="badge badge-success" style={{ textDecoration: 'none' }}>Go to Login</Link>
             </div>
