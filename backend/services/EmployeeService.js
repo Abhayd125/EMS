@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
 const employeeRepository = require('../repositories/EmployeeRepository');
 const leaveRepository = require('../repositories/LeaveRepository');
 const prisma = require('../database/db');
@@ -49,6 +50,30 @@ class EmployeeService {
     }
     const skillInts = skillIds.map(id => parseInt(id)).filter(id => !isNaN(id));
 
+    let finalUserId = userId ? parseInt(userId) : null;
+    if (!finalUserId) {
+      // Check if a user with this email already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email }
+      });
+      if (existingUser) {
+        finalUserId = existingUser.id;
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash('password123', salt);
+        const newUser = await prisma.user.create({
+          data: {
+            name,
+            email,
+            password: hashedPassword,
+            role: 'EMPLOYEE',
+            isVerified: true
+          }
+        });
+        finalUserId = newUser.id;
+      }
+    }
+
     const employee = await employeeRepository.create({
       name,
       email,
@@ -59,7 +84,7 @@ class EmployeeService {
       documents,
       departmentId: parseInt(departmentId),
       skills: skillInts,
-      userId: userId ? parseInt(userId) : null,
+      userId: finalUserId,
       managerId: managerId ? parseInt(managerId) : null
     });
 
@@ -165,6 +190,12 @@ class EmployeeService {
       if (emailTaken && emailTaken.id !== empId) {
         throw new AppError('Employee with this email already exists', 400);
       }
+      const userEmailTaken = await prisma.user.findUnique({
+        where: { email }
+      });
+      if (userEmailTaken && (!existingEmployee.userId || userEmailTaken.id !== existingEmployee.userId)) {
+        throw new AppError('User credentials with this email already exists', 400);
+      }
     }
 
     const updateData = {};
@@ -246,15 +277,49 @@ class EmployeeService {
 
     const updatedEmployee = await employeeRepository.update(empId, updateData);
 
-    // Sync corresponding User account details
-    if (updatedEmployee.userId) {
+    // Sync corresponding User account details or create one if missing
+    let targetUserId = updatedEmployee.userId;
+    if (!targetUserId) {
+      // Check if a user with this email already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: updatedEmployee.email }
+      });
+      if (existingUser) {
+        targetUserId = existingUser.id;
+        // link it
+        await prisma.employee.update({
+          where: { id: empId },
+          data: { userId: targetUserId }
+        });
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash('password123', salt);
+        const newUser = await prisma.user.create({
+          data: {
+            name: updatedEmployee.name,
+            email: updatedEmployee.email,
+            password: hashedPassword,
+            role: 'EMPLOYEE',
+            isVerified: true
+          }
+        });
+        targetUserId = newUser.id;
+        // link it
+        await prisma.employee.update({
+          where: { id: empId },
+          data: { userId: targetUserId }
+        });
+      }
+    }
+
+    if (targetUserId) {
       const userUpdate = {};
       if (name) userUpdate.name = name;
       if (email) userUpdate.email = email;
 
       if (Object.keys(userUpdate).length > 0) {
         await prisma.user.update({
-          where: { id: updatedEmployee.userId },
+          where: { id: targetUserId },
           data: userUpdate
         });
       }
@@ -296,6 +361,8 @@ class EmployeeService {
       throw new AppError('Employee not found', 404);
     }
 
+    const userIdToDelete = employee.userId;
+
     // Delete files
     deleteFile(employee.profileImage);
     deleteFile(employee.resume);
@@ -309,6 +376,15 @@ class EmployeeService {
     docs.forEach(doc => deleteFile(doc));
 
     await employeeRepository.delete(empId);
+
+    if (userIdToDelete) {
+      const user = await prisma.user.findUnique({ where: { id: userIdToDelete } });
+      if (user && user.role !== 'ADMIN') {
+        await prisma.user.delete({
+          where: { id: userIdToDelete }
+        });
+      }
+    }
 
     await auditTrailService.log(
       'Employee', 

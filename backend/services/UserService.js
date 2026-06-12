@@ -7,6 +7,12 @@ const AppError = require('../utils/AppError');
 class UserService {
   async getAllUsers() {
     const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { role: 'ADMIN' },
+          { employee: { isNot: null } }
+        ]
+      },
       select: {
         id: true,
         name: true,

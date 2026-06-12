@@ -23,15 +23,20 @@ describe('PayrollService Unit Tests', () => {
       prisma.employee.findUnique.mockResolvedValue(mockEmployee);
       
       const mockPayrollInput = {
-        baseSalary: 50000,
-        allowance: 10000,
+        basicPay: 50000,
         pf: 5000,
-        tds: 3000,
+        gis: 1000,
+        recovery: 500,
+        advance: 1000,
+        tax: 3000,
         payMonth: '2026-06',
         status: 'PAID'
       };
 
-      const expectedNetSalary = 50000 + 10000 - 5000 - 3000; // 52000
+      // additions: basicPay (50000) + allowance (25000) + hra (2500) = 77500
+      // deductions: pf (5000) + gis (1000) + recovery (500) + advance (1000) + tax (3000) = 10500
+      // netSalary: 77500 - 10500 = 67000
+      const expectedNetSalary = 67000;
 
       prisma.payroll.upsert.mockImplementation(({ create }) => {
         return Promise.resolve({
@@ -44,7 +49,7 @@ describe('PayrollService Unit Tests', () => {
       const result = await payrollService.createOrUpdatePayroll(10, mockPayrollInput);
 
       expect(result).toBeDefined();
-      expect(result.netSalary).toBe(52000);
+      expect(result.netSalary).toBe(67000);
       expect(prisma.employee.findUnique).toHaveBeenCalledWith({ where: { id: 10 } });
       expect(prisma.payroll.upsert).toHaveBeenCalledWith({
         where: {
@@ -54,20 +59,28 @@ describe('PayrollService Unit Tests', () => {
           }
         },
         update: {
-          baseSalary: 50000,
-          allowance: 10000,
+          basicPay: 50000,
+          allowance: 25000,
+          hra: 2500,
           pf: 5000,
-          tds: 3000,
-          netSalary: 52000,
+          gis: 1000,
+          recovery: 500,
+          advance: 1000,
+          tax: 3000,
+          netSalary: 67000,
           status: 'PAID'
         },
         create: {
           employeeId: 10,
-          baseSalary: 50000,
-          allowance: 10000,
+          basicPay: 50000,
+          allowance: 25000,
+          hra: 2500,
           pf: 5000,
-          tds: 3000,
-          netSalary: 52000,
+          gis: 1000,
+          recovery: 500,
+          advance: 1000,
+          tax: 3000,
+          netSalary: 67000,
           payMonth: '2026-06',
           status: 'PAID'
         }
@@ -78,7 +91,7 @@ describe('PayrollService Unit Tests', () => {
       prisma.employee.findUnique.mockResolvedValue(null);
 
       const mockPayrollInput = {
-        baseSalary: 50000,
+        basicPay: 50000,
         payMonth: '2026-06'
       };
 
@@ -89,7 +102,7 @@ describe('PayrollService Unit Tests', () => {
       expect(prisma.payroll.upsert).not.toHaveBeenCalled();
     });
 
-    test('should throw AppError if base salary is missing', async () => {
+    test('should throw AppError if basic pay is missing', async () => {
       await expect(
         payrollService.createOrUpdatePayroll(10, { payMonth: '2026-06' })
       ).rejects.toThrow(AppError);
@@ -97,7 +110,7 @@ describe('PayrollService Unit Tests', () => {
 
     test('should throw AppError if pay month is missing', async () => {
       await expect(
-        payrollService.createOrUpdatePayroll(10, { baseSalary: 50000 })
+        payrollService.createOrUpdatePayroll(10, { basicPay: 50000 })
       ).rejects.toThrow(AppError);
     });
   });
