@@ -39,7 +39,8 @@ class UserRepository {
   async update(id, data) {
     return prisma.user.update({
       where: { id },
-      data
+      data,
+      include: { employee: true }
     });
   }
 

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const employeeRepository = require('../repositories/EmployeeRepository');
 const leaveRepository = require('../repositories/LeaveRepository');
+const prisma = require('../database/db');
 const auditTrailService = require('./AuditTrailService');
 const AppError = require('../utils/AppError');
 
@@ -244,6 +245,20 @@ class EmployeeService {
     }
 
     const updatedEmployee = await employeeRepository.update(empId, updateData);
+
+    // Sync corresponding User account details
+    if (updatedEmployee.userId) {
+      const userUpdate = {};
+      if (name) userUpdate.name = name;
+      if (email) userUpdate.email = email;
+
+      if (Object.keys(userUpdate).length > 0) {
+        await prisma.user.update({
+          where: { id: updatedEmployee.userId },
+          data: userUpdate
+        });
+      }
+    }
 
     await auditTrailService.log(
       'Employee', 
