@@ -199,10 +199,14 @@ model Payroll {
   id          Int      @id @default(autoincrement())
   employeeId  Int
   employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  baseSalary  Float
+  basicPay    Float
   allowance   Float    @default(0)
+  hra         Float    @default(0)
   pf          Float    @default(0)
-  tds         Float    @default(0)
+  gis         Float    @default(0)
+  recovery    Float    @default(0)
+  advance     Float    @default(0)
+  tax         Float    @default(0)
   netSalary   Float
   payMonth    String   // format "YYYY-MM"
   status      String   @default("PAID") // "PAID", "PENDING"
