@@ -24,7 +24,7 @@ describe('PayrollService Unit Tests', () => {
       
       const mockPayrollInput = {
         basicPay: 50000,
-        pf: 5000,
+        pf: 7500,
         gis: 1000,
         recovery: 500,
         advance: 1000,
@@ -34,9 +34,9 @@ describe('PayrollService Unit Tests', () => {
       };
 
       // additions: basicPay (50000) + allowance (25000) + hra (2500) = 77500
-      // deductions: pf (5000) + gis (1000) + recovery (500) + advance (1000) + tax (3000) = 10500
-      // netSalary: 77500 - 10500 = 67000
-      const expectedNetSalary = 67000;
+      // deductions: pf (7500) + gis (1000) + recovery (500) + advance (1000) + tax (3000) = 13000
+      // netSalary: 77500 - 13000 = 64500
+      const expectedNetSalary = 64500;
 
       prisma.payroll.upsert.mockImplementation(({ create }) => {
         return Promise.resolve({
@@ -49,7 +49,7 @@ describe('PayrollService Unit Tests', () => {
       const result = await payrollService.createOrUpdatePayroll(10, mockPayrollInput);
 
       expect(result).toBeDefined();
-      expect(result.netSalary).toBe(67000);
+      expect(result.netSalary).toBe(64500);
       expect(prisma.employee.findUnique).toHaveBeenCalledWith({ where: { id: 10 } });
       expect(prisma.payroll.upsert).toHaveBeenCalledWith({
         where: {
@@ -62,12 +62,12 @@ describe('PayrollService Unit Tests', () => {
           basicPay: 50000,
           allowance: 25000,
           hra: 2500,
-          pf: 5000,
+          pf: 7500,
           gis: 1000,
           recovery: 500,
           advance: 1000,
           tax: 3000,
-          netSalary: 67000,
+          netSalary: 64500,
           status: 'PAID'
         },
         create: {
@@ -75,12 +75,12 @@ describe('PayrollService Unit Tests', () => {
           basicPay: 50000,
           allowance: 25000,
           hra: 2500,
-          pf: 5000,
+          pf: 7500,
           gis: 1000,
           recovery: 500,
           advance: 1000,
           tax: 3000,
-          netSalary: 67000,
+          netSalary: 64500,
           payMonth: '2026-06',
           status: 'PAID'
         }

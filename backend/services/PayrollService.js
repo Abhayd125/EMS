@@ -46,7 +46,6 @@ class PayrollService {
     }
 
     const parsedBasic = parseFloat(basicPay);
-    const parsedPf = parseFloat(pf || 0);
     const parsedGis = parseFloat(gis || 0);
     const parsedRecovery = parseFloat(recovery || 0);
     const parsedAdvance = parseFloat(advance || 0);
@@ -54,7 +53,6 @@ class PayrollService {
 
     if (
       isNaN(parsedBasic) ||
-      isNaN(parsedPf) ||
       isNaN(parsedGis) ||
       isNaN(parsedRecovery) ||
       isNaN(parsedAdvance) ||
@@ -63,13 +61,14 @@ class PayrollService {
       throw new AppError('Salary fields must be valid numbers', 400);
     }
 
-    // Auto-calculate allowance (50% of basicPay) and HRA (5% of basicPay)
+    // Auto-calculate allowance (50% of basicPay), HRA (5% of basicPay), and PF (10% of basicPay + allowance)
     const computedAllowance = parseFloat((parsedBasic * 0.50).toFixed(2));
     const computedHra = parseFloat((parsedBasic * 0.05).toFixed(2));
+    const computedPf = parseFloat(((parsedBasic + computedAllowance) * 0.10).toFixed(2));
 
     // Calculate additions and deductions
     const totalAdditions = parsedBasic + computedAllowance + computedHra;
-    const totalDeductions = parsedPf + parsedGis + parsedRecovery + parsedAdvance + parsedTax;
+    const totalDeductions = computedPf + parsedGis + parsedRecovery + parsedAdvance + parsedTax;
 
     const netSalary = parseFloat(Math.max(0, totalAdditions - totalDeductions).toFixed(2));
 
@@ -93,7 +92,7 @@ class PayrollService {
         basicPay: parsedBasic,
         allowance: computedAllowance,
         hra: computedHra,
-        pf: parsedPf,
+        pf: computedPf,
         gis: parsedGis,
         recovery: parsedRecovery,
         advance: parsedAdvance,
@@ -106,7 +105,7 @@ class PayrollService {
         basicPay: parsedBasic,
         allowance: computedAllowance,
         hra: computedHra,
-        pf: parsedPf,
+        pf: computedPf,
         gis: parsedGis,
         recovery: parsedRecovery,
         advance: parsedAdvance,

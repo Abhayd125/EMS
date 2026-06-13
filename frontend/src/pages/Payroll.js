@@ -58,6 +58,17 @@ const Payroll = () => {
     }
   }, [success, dispatch, isAdminOrHR, currentUser]);
 
+  useEffect(() => {
+    if (basicPay) {
+      const basic = parseFloat(basicPay || 0);
+      const allowance = basic * 0.50;
+      const computedPf = ((basic + allowance) * 0.10).toFixed(2);
+      setPf(computedPf);
+    } else {
+      setPf('');
+    }
+  }, [basicPay]);
+
   const handleSave = (e) => {
     e.preventDefault();
     setValidationError('');
@@ -77,9 +88,13 @@ const Payroll = () => {
       return;
     }
 
+    const basicVal = parseFloat(basicPay);
+    const allowanceVal = basicVal * 0.50;
+    const calculatedPf = parseFloat(((basicVal + allowanceVal) * 0.10).toFixed(2));
+
     const payload = {
-      basicPay: parseFloat(basicPay),
-      pf: parseFloat(pf || 0),
+      basicPay: basicVal,
+      pf: calculatedPf,
       gis: parseFloat(gis || 0),
       recovery: parseFloat(recovery || 0),
       advance: parseFloat(advance || 0),
@@ -97,7 +112,7 @@ const Payroll = () => {
     const basic = parseFloat(basicPay || 0);
     const allow = basic * 0.50;
     const hra = basic * 0.05;
-    const pfDeduct = parseFloat(pf || 0);
+    const pfDeduct = parseFloat(((basic + allow) * 0.10).toFixed(2));
     const gisDeduct = parseFloat(gis || 0);
     const recDeduct = parseFloat(recovery || 0);
     const advDeduct = parseFloat(advance || 0);
@@ -239,14 +254,13 @@ const Payroll = () => {
 
                 {/* PF */}
                 <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">PF Deduction (₹)</label>
+                  <label className="form-label">PF Deduction (10% - Auto)</label>
                   <input
-                    type="number"
+                    type="text"
                     className="form-input"
-                    placeholder="Provident Fund"
-                    value={pf}
-                    onChange={(e) => setPf(e.target.value)}
-                    style={{ width: '100%' }}
+                    value={pf ? `₹${parseFloat(pf).toFixed(2)}` : '₹0.00'}
+                    disabled
+                    style={{ width: '100%', background: 'rgba(255,255,255,0.03)', cursor: 'not-allowed' }}
                   />
                 </div>
               </div>
