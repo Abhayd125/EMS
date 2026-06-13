@@ -258,7 +258,7 @@ const Payroll = () => {
                   <input
                     type="text"
                     className="form-input"
-                    value={pf ? `₹${parseFloat(pf).toFixed(2)}` : '₹0.00'}
+                    value={basicPay ? `₹${((parseFloat(basicPay) + parseFloat(basicPay) * 0.50) * 0.10).toFixed(2)}` : '₹0.00'}
                     disabled
                     style={{ width: '100%', background: 'rgba(255,255,255,0.03)', cursor: 'not-allowed' }}
                   />
