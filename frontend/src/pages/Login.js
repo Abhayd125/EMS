@@ -50,7 +50,7 @@ const Login = () => {
               </div>
               <div>
                 <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '0.05em', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  OURA
+                  ORA
                 </h1>
                 <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 700, letterSpacing: '0.1em' }}>ENTERPRISE PORTAL</span>
               </div>
@@ -60,7 +60,7 @@ const Login = () => {
               Employee Management & Operational Alignment System
             </h2>
             <p style={{ color: 'var(--text-secondary)', marginTop: '1rem', fontSize: '0.95rem', lineHeight: '1.6', maxWidth: '520px' }}>
-              Welcome to the Oura unified operations workspace. Our integrated portal serves as the primary system of record for attendance tracking, leaves workflow approvals, payroll computations, and asset allocation clearances.
+              Welcome to the ORA unified operations workspace. Our integrated portal serves as the primary system of record for attendance tracking, leaves workflow approvals, payroll computations, and asset allocation clearances.
             </p>
           </div>
 
@@ -97,7 +97,7 @@ const Login = () => {
 
           {/* Bottom: Footer */}
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-            <span>&copy; {new Date().getFullYear()} OURA Inc. All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} ORA Inc. All rights reserved.</span>
             <span>Security Level: Tier-1 Access</span>
           </div>
         </div>
