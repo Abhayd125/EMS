@@ -105,6 +105,122 @@ body {
   padding: 1.5rem;
 }
 
+/* Login Split Layout */
+.login-split-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-primary);
+  overflow-x: hidden;
+}
+
+.login-info-panel {
+  flex: 1;
+  width: 50%;
+  position: relative;
+  background-image: url('./assets/oura_office_bg.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4rem;
+  overflow: hidden;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.login-info-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(5, 5, 5, 0.94) 0%, rgba(13, 13, 16, 0.78) 100%);
+  z-index: 1;
+}
+
+.login-info-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.login-form-panel {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  position: relative;
+  background: radial-gradient(circle at 80% 20%, var(--primary-glow) 0%, transparent 40%),
+              var(--bg-primary);
+}
+
+/* Glass card inside the info panel for attendance checklist */
+.attendance-rule-card {
+  background: rgba(239, 68, 68, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(239, 68, 68, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  margin-top: 1.5rem;
+  transition: var(--transition);
+}
+
+.attendance-rule-card:hover {
+  border-color: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.04);
+  transform: translateY(-2px);
+}
+
+.rule-item {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  align-items: flex-start;
+}
+
+.rule-number {
+  background: var(--primary-glow);
+  color: var(--primary);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+/* Media Query for Login Split Page */
+@media (max-width: 992px) {
+  .login-split-container {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .login-info-panel {
+    width: 100%;
+    min-height: auto;
+    padding: 2.5rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .login-form-panel {
+    width: 100%;
+    padding: 2.5rem 1.5rem;
+  }
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
