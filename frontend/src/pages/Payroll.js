@@ -23,7 +23,7 @@ const Payroll = () => {
   // Admin Setup States
   const [selectedEmpId, setSelectedEmpId] = useState('');
   const [basicPay, setBasicPay] = useState('');
-  const [pf, setPf] = useState('');
+
   const [gis, setGis] = useState('');
   const [recovery, setRecovery] = useState('');
   const [advance, setAdvance] = useState('');
@@ -45,7 +45,7 @@ const Payroll = () => {
   useEffect(() => {
     if (success) {
       setBasicPay('');
-      setPf('');
+
       setGis('');
       setRecovery('');
       setAdvance('');
@@ -58,16 +58,6 @@ const Payroll = () => {
     }
   }, [success, dispatch, isAdminOrHR, currentUser]);
 
-  useEffect(() => {
-    if (basicPay) {
-      const basic = parseFloat(basicPay || 0);
-      const allowance = basic * 0.50;
-      const computedPf = ((basic + allowance) * 0.10).toFixed(2);
-      setPf(computedPf);
-    } else {
-      setPf('');
-    }
-  }, [basicPay]);
 
   const handleSave = (e) => {
     e.preventDefault();
